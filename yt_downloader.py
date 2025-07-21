@@ -2,7 +2,7 @@ import yt_dlp
 import os
 
 def download_1080p_with_audio(url):
-    FFMPEG_PATH = r"ffmpeg\bin\ffmpeg.exe"
+    FFMPEG_PATH = r"ffmpeg\ffmpeg.exe"
     
     ydl_opts = {
         'format': 'bestvideo[height<=1080]+bestaudio/best',
