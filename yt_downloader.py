@@ -6,7 +6,7 @@ def download_1080p_with_audio(url):
     
     ydl_opts = {
         'format': 'bestvideo[height<=1080]+bestaudio/best',
-        'merge_output_format': 'mp4',
+        'merge_output_format': 'mkv',
         'outtmpl': '%(title)s_1080p.%(ext)s',
         'ffmpeg_location': FFMPEG_PATH,
         'progress_hooks': [lambda d: print(f"\rProgress: {d['_percent_str']} | Прогресс: {d['_percent_str']}", end='')],
@@ -26,7 +26,7 @@ def download_1080p_with_audio(url):
             filename = ydl.prepare_filename(info)
             full_path = os.path.abspath(filename)
             
-            print(f"\nDownload complete | Видео успешно загружено: {info['title']}.mp4")
+            print(f"\nDownload complete | Видео успешно загружено: {info['title']}.mkv")
             print(f"\nFile saved to | Файл сохранён по пути: {full_path}")
             
             return full_path
