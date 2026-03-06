@@ -1,42 +1,69 @@
 import yt_dlp
 import os
 
-def download_1080p_with_audio(url):
-    FFMPEG_PATH = r"ffmpeg\ffmpeg.exe"
-    
-    ydl_opts = {
-        'format': 'bestvideo[height<=1080]+bestaudio/best',
-        'merge_output_format': 'mkv',
-        'outtmpl': '%(title)s_1080p.%(ext)s',
-        'ffmpeg_location': FFMPEG_PATH,
-        'progress_hooks': [lambda d: print(f"\rProgress: {d['_percent_str']} | Прогресс: {d['_percent_str']}", end='')],
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept-Language': 'en-US,en;q=0.9'
-        },
-        'extractor_args': {'youtube': {'skip': ['dash', 'hls']}},
-        'retries': 5
+URLS = [input("Введите ссылку на видео: ")]
+download_path = 'Downloads/'
+
+def finished_hook(info):
+    if info['status'] == 'finished':
+        print(f"\nГОТОВО! Файл сохранен по пути: {os.path.abspath(info['info_dict']['_filename'])}")
+
+def format_selector(ctx):
+    formats = ctx.get('formats')
+
+    best_video = next(f for f in formats if f['format_id'] == video_id)
+    best_audio = next(f for f in formats if f['format_id'] == audio_id)
+
+    yield {
+        'format_id': f'{video_id}+{audio_id}',
+        'ext': 'mkv',
+        'requested_formats': [best_video, best_audio],
+        'protocol': f'{best_video["protocol"]}+{best_audio["protocol"]}'
     }
 
-    try:
-        print("Starting download... | Начинаем загрузку...")
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            
-            filename = ydl.prepare_filename(info)
-            full_path = os.path.abspath(filename)
-            
-            print(f"\nDownload complete | Видео успешно загружено: {info['title']}.mkv")
-            print(f"\nFile saved to | Файл сохранён по пути: {full_path}")
-            
-            return full_path
-            
-    except Exception as e:
-        return None
+ydl_opts1 = {
+    'ffmpeg_location': 'ffmpeg/',
+    'merge_output_format': 'mkv',
+    'javascript_runtime': 'deno',
+    'ext_utils': {'deno': 'deno/deno.exe'},
+    'writetitle': True,
+    'quiet': True,
+    'no_warnings': True,
+}
 
-if __name__ == "__main__":
-    video_url = input("Enter YouTube video URL / Введите URL YouTube видео: ")
-    file_path = download_1080p_with_audio(video_url)
+with yt_dlp.YoutubeDL(ydl_opts1) as ydl:
+    info = ydl.extract_info(URLS[0], download=False)
+    print("\n--- Доступные форматы видео ---")
+    for f in info['formats']:
+        vcodec = f.get('vcodec')
+        acodec = f.get('acodec')
+        if vcodec != 'none' and acodec == 'none':
+            print(f"ID: {f['format_id']:<4} | Ext: {f['ext']:<6} | Res: {f.get('resolution'):<10} | Bitrate: {f.get('tbr'):<10}")
     
-    if not file_path:
-        print("\nDownload failed. | Не удалось загрузить видео.")
+    print("\n--- Доступные форматы аудио ---")
+    for f in info['formats']:
+        vcodec = f.get('vcodec')
+        acodec = f.get('acodec')
+        if vcodec == 'none' and acodec != 'none':
+            print(f"ID: {f['format_id']:<4} | Ext: {f['ext']:<6} | Res: {f.get('resolution'):<10} | Bitrate: {f.get('tbr'):<10}")
+
+print()
+video_id = input("Введите ID видео (например, 313): ")
+audio_id = input("Введите ID аудио (например, 140): ")
+print()
+
+ydl_opts2 = {
+    'outtmpl': f'{download_path}/%(title)s.%(ext)s',
+    'format': format_selector,
+    'ffmpeg_location': 'ffmpeg/',
+    'merge_output_format': 'mkv',
+    'javascript_runtime': 'deno',
+    'ext_utils': {'deno': 'deno/deno.exe'},
+    'writetitle': True,
+    'quiet': False,
+    'no_warnings': True,
+    'postprocessor_hooks': [finished_hook]
+}
+
+with yt_dlp.YoutubeDL(ydl_opts2) as ydl:
+    ydl.download(URLS)
