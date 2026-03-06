@@ -4,10 +4,6 @@ import os
 URLS = [input("Введите ссылку на видео: ")]
 download_path = 'Downloads/'
 
-def finished_hook(info):
-    if info['status'] == 'finished':
-        print(f"\nГОТОВО! Файл сохранен по пути: {os.path.abspath(info['info_dict']['_filename'])}")
-
 def format_selector(ctx):
     formats = ctx.get('formats')
 
@@ -53,7 +49,7 @@ audio_id = input("Введите ID аудио (например, 140): ")
 print()
 
 ydl_opts2 = {
-    'outtmpl': f'{download_path}/%(title)s.%(ext)s',
+    'outtmpl': f'{download_path}/%(title)s [%(format_id)s].%(ext)s',
     'format': format_selector,
     'ffmpeg_location': 'ffmpeg/',
     'merge_output_format': 'mkv',
@@ -62,8 +58,10 @@ ydl_opts2 = {
     'writetitle': True,
     'quiet': False,
     'no_warnings': True,
-    'postprocessor_hooks': [finished_hook]
 }
 
 with yt_dlp.YoutubeDL(ydl_opts2) as ydl:
-    ydl.download(URLS)
+    result = ydl.download(URLS)
+
+if result == 0:
+    print(f"\nDONE! The video is ready in the Downloads folder.")
