@@ -1,7 +1,7 @@
 import yt_dlp
 import os
 
-URLS = [input("Введите ссылку на видео: ")]
+URLS = [input("Enter video URL: ")]
 download_path = 'Downloads/'
 
 def format_selector(ctx):
@@ -29,14 +29,14 @@ ydl_opts1 = {
 
 with yt_dlp.YoutubeDL(ydl_opts1) as ydl:
     info = ydl.extract_info(URLS[0], download=False)
-    print("\n--- Доступные форматы видео ---")
+    print("\n--- Available Video Formats ---")
     for f in info['formats']:
         vcodec = f.get('vcodec')
         acodec = f.get('acodec')
         if vcodec != 'none' and acodec == 'none':
             print(f"ID: {f['format_id']:<4} | Ext: {f['ext']:<6} | Res: {f.get('resolution'):<10} | Bitrate: {f.get('tbr'):<10}")
     
-    print("\n--- Доступные форматы аудио ---")
+    print("\n--- Available Audio Formats ---")
     for f in info['formats']:
         vcodec = f.get('vcodec')
         acodec = f.get('acodec')
@@ -44,8 +44,8 @@ with yt_dlp.YoutubeDL(ydl_opts1) as ydl:
             print(f"ID: {f['format_id']:<4} | Ext: {f['ext']:<6} | Res: {f.get('resolution'):<10} | Bitrate: {f.get('tbr'):<10}")
 
 print()
-video_id = input("Введите ID видео (например, 313): ")
-audio_id = input("Введите ID аудио (например, 140): ")
+video_id = input("Enter Video ID (e.g., 313): ")
+audio_id = input("Enter Audio ID (e.g., 140): ")
 print()
 
 ydl_opts2 = {
