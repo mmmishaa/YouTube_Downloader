@@ -64,4 +64,4 @@ with yt_dlp.YoutubeDL(ydl_opts2) as ydl:
     result = ydl.download(URLS)
 
 if result == 0:
-    print(f"\nDONE! The video is ready in the Downloads folder.")
+    print(f"\nDone! The video is ready in the Downloads folder.")
