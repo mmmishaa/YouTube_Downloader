@@ -100,7 +100,7 @@ with yt_dlp.YoutubeDL(ydl_opts1) as ydl:
 
 print()
 video_id = input("Enter Video ID (e.g., 313): ")
-audio_id = input("Enter Audio ID (e.g., 140): ")
+audio_id = input("Enter Audio ID (e.g., 140-1): ")
 print()
 
 ydl_opts2 = {
