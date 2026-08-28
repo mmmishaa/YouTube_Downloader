@@ -1,5 +1,6 @@
 *.mp4
 ffmpeg.zip
+deno.zip
 /Downloads
 /ffmpeg
 /deno
