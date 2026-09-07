@@ -1,3 +1,5 @@
+import msvcrt
+
 def make_format_selector(video_id, audio_id):
 
     def format_selector(ctx):
@@ -42,6 +44,24 @@ def get_size_str(f, duration):
         size_bytes /= 1024.0
     return f"{size_bytes:.1f} TB"
 
-def progress_bar_hooks(d):
-    info = d.get('info_dict', {})
-    print(info)
+def ask_restart() -> bool:
+    print('Download another video? (Y - Yes, N - Exit)', end='', flush=True)
+
+    while True:
+        char = msvcrt.getch()
+
+        try:
+            key = char.decode('utf-8').lower()
+        except UnicodeDecodeError:
+            continue
+
+        if key in ("y", "д"):
+            print(key)
+            return True
+        
+        elif key in ("n", "н"):
+            print(key)
+            return False
+        
+        elif key == "\x03":
+            raise KeyboardInterrupt

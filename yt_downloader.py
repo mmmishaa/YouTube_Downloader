@@ -1,9 +1,17 @@
 import yt_dlp
 from pathlib import Path
-from src.utils import make_format_selector, format_size, get_size_str, progress_bar_hooks
-# import logging
+from src.utils import format_size, get_size_str, ask_restart
+import logging
+import sys
 
-# logger = logging.getLogger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
+
+logger = logging.getLogger("Downloader")
 
 BASE_PATH = Path(__file__).resolve().parent
 
@@ -11,8 +19,10 @@ DOWNLOAD_PATH = BASE_PATH / 'Downloads'
 
 ydl_opts = {
     'outtmpl': f'{DOWNLOAD_PATH}/%(title)s [%(format_id)s].%(ext)s',
+    "retries": 10,
+    "retry_sleep": 2,
+    "fragment_retries": 10,
     # 'format': format_selector,
-    'progress_hooks': progress_bar_hooks,
     'ffmpeg_location': str(BASE_PATH / 'ffmpeg'),
     'merge_output_format': 'mkv',
     'javascript_runtime': 'deno',
@@ -84,8 +94,8 @@ def main():
     while True:
         run_task()
 
-        # if not ask_restart():
-        #     break
+        if not ask_restart():
+            break
 
 if __name__ == '__main__':
     main()
