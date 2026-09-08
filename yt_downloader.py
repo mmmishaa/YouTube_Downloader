@@ -1,6 +1,7 @@
 import yt_dlp
 from pathlib import Path
 from src.utils import format_size, get_size_str, ask_restart
+from src.libs import check_libs, check_dependencies
 import logging
 import sys
 
@@ -22,18 +23,17 @@ ydl_opts = {
     "retries": 10,
     "retry_sleep": 2,
     "fragment_retries": 10,
-    # 'format': format_selector,
-    'ffmpeg_location': str(BASE_PATH / 'ffmpeg'),
+    'ffmpeg_location': None,
     'merge_output_format': 'mkv',
     'javascript_runtime': 'deno',
-    'ext_utils': {'deno': str(BASE_PATH / 'deno' / 'deno.exe')},
+    'ext_utils': {'deno': None},
     'writetitle': True,
     'quiet': True,
     'no_warnings': True,
 }
 
 def run_task():
-    URL = input("Enter video URL: ")
+    URL = input("\nEnter video URL: ")
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(URL, download=False)
@@ -85,12 +85,15 @@ def run_task():
 
     ydl.params['format'] = f'{video_id}+{audio_id}'
 
-    result = ydl.download(URL)
+    logger.info("Start downloading")
+
+    result = ydl.download([URL])
 
     if result == 0:
         print(f"\nDone! The video is ready in the Downloads folder.")
 
 def main():
+
     while True:
         run_task()
 
@@ -98,4 +101,8 @@ def main():
             break
 
 if __name__ == '__main__':
+    check_libs()
+    deno_bin_path, ffmpeg_bin_path = check_dependencies(BASE_PATH)
+    ydl_opts['ext_utils']['deno'] = str(deno_bin_path)
+    ydl_opts['ffmpeg_location'] = str(ffmpeg_bin_path)
     main()

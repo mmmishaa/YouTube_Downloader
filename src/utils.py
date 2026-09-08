@@ -45,7 +45,7 @@ def get_size_str(f, duration):
     return f"{size_bytes:.1f} TB"
 
 def ask_restart() -> bool:
-    print('Download another video? (Y - Yes, N - Exit)', end='', flush=True)
+    print('Download another video? (y - Yes, n - Exit): ', end='', flush=True)
 
     while True:
         char = msvcrt.getch()

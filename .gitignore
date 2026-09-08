@@ -1,7 +1,4 @@
-*.mp4
-ffmpeg.zip
-deno.zip
 /Downloads
-/ffmpeg
-/deno
 __pycache__/
+/bin
+/venv
