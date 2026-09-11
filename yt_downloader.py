@@ -25,8 +25,8 @@ ydl_opts = {
     "fragment_retries": 10,
     'ffmpeg_location': None,
     'merge_output_format': 'mkv',
-    'javascript_runtime': 'deno',
-    'ext_utils': {'deno': None},
+    'js_runtimes': {},
+    'remote_components': ['ejs:github'],
     'writetitle': True,
     'quiet': True,
     'no_warnings': True,
@@ -103,6 +103,6 @@ def main():
 if __name__ == '__main__':
     check_libs()
     deno_bin_path, ffmpeg_bin_path = check_dependencies(BASE_PATH)
-    ydl_opts['ext_utils']['deno'] = str(deno_bin_path)
+    ydl_opts['js_runtimes'] = {'deno': {'path': str(deno_bin_path)}}
     ydl_opts['ffmpeg_location'] = str(ffmpeg_bin_path)
     main()

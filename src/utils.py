@@ -48,20 +48,12 @@ def ask_restart() -> bool:
     print('Download another video? (y - Yes, n - Exit): ', end='', flush=True)
 
     while True:
-        char = msvcrt.getch()
-
         try:
-            key = char.decode('utf-8').lower()
-        except UnicodeDecodeError:
-            continue
-
-        if key in ("y", "д"):
-            print(key)
-            return True
-        
-        elif key in ("n", "н"):
-            print(key)
+            ans = input().strip().lower()
+        except (EOFError, KeyboardInterrupt):
             return False
-        
-        elif key == "\x03":
-            raise KeyboardInterrupt
+
+        if ans in ("y", "д", "yes", "да"):
+            return True
+        elif ans in ("n", "н", "no", "нет"):
+            return False
